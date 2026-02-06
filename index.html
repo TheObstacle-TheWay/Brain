@@ -3,431 +3,235 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Word of the Day</title>
+    <title>Anthony's Brain</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Source+Serif+4:wght@400;600&display=swap");
+
       :root {
-        --bg: #f6f3ee;
-        --text: #1e1e1e;
-        --accent: #3a5a40;
+        --bg: #f2efe7;
+        --ink: #171512;
+        --accent: #5c4033;
+        --accent-2: #2f4b3a;
+        --card: #fff8ee;
       }
+
+      * { box-sizing: border-box; }
+
       html, body {
         height: 100%;
         margin: 0;
       }
+
       body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: radial-gradient(circle at 20% 20%, #fff7e6 0%, var(--bg) 55%, #efe7dd 100%);
-        color: var(--text);
-        font-family: "Georgia", "Times New Roman", serif;
+        font-family: "Source Serif 4", "Georgia", serif;
+        color: var(--ink);
+        background:
+          radial-gradient(800px 400px at 15% 10%, #fff6e6 0%, rgba(255, 246, 230, 0.6) 45%, transparent 60%),
+          radial-gradient(700px 380px at 90% 15%, #e7f0e7 0%, rgba(231, 240, 231, 0.5) 45%, transparent 60%),
+          linear-gradient(180deg, #f7f1e8 0%, var(--bg) 55%, #efe8db 100%);
+        display: grid;
+        place-items: center;
+        padding: 24px;
       }
-      .card {
-        text-align: center;
-        padding: 2rem 3rem;
-        border: 1px solid #e0d7cc;
-        border-radius: 16px;
-        background: rgba(255, 255, 255, 0.8);
+
+      .page {
+        width: min(980px, 100%);
+      }
+
+      .hero {
+        display: grid;
+        gap: 18px;
+        background: var(--card);
+        border: 1px solid #e2d8c6;
+        border-radius: 20px;
+        padding: clamp(22px, 4vw, 34px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        max-width: 720px;
       }
-      .word {
-        font-size: 36pt;
-        font-weight: 700;
-        color: var(--accent);
-        margin: 0 0 0.5rem 0;
+
+      .title {
+        font-family: "Fraunces", serif;
+        font-size: clamp(30px, 4.5vw, 46px);
+        margin: 0;
+        color: var(--accent-2);
+        letter-spacing: 0.02em;
       }
-      .word-row {
+
+      .subtitle {
+        margin: 0;
+        font-size: clamp(16px, 2.2vw, 20px);
+        color: #4a433a;
+      }
+
+      .cta-grid {
+        display: grid;
+        gap: 12px;
+        margin-top: 6px;
+      }
+
+      .cta {
         display: inline-flex;
         align-items: center;
         gap: 10px;
-      }
-      .speak-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        border: 1px solid #d6cec3;
-        background: #fff;
-        display: grid;
-        place-items: center;
-        cursor: pointer;
-      }
-      .speak-btn:hover {
-        background: #f7f4ef;
-      }
-      .definition {
-        font-size: 18pt;
-        margin: 0;
-        line-height: 1.4;
-      }
-      .meta {
-        margin-top: 0.75rem;
-        font-size: 10pt;
-        color: #6b6b6b;
-      }
-      .warning {
-        margin-top: 0.35rem;
-        font-size: 10pt;
-        color: #9b2c2c;
-      }
-      button.refresh {
-        margin-top: 1rem;
-        padding: 0.5rem 1rem;
+        padding: 14px 18px;
         border-radius: 999px;
         border: 1px solid #d6cec3;
         background: #fff;
-        cursor: pointer;
-        font-size: 12pt;
-      }
-      button.refresh:hover {
-        background: #f7f4ef;
-      }
-      .actions {
-        position: fixed;
-        bottom: 18px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 12px;
-        align-items: center;
-      }
-      .icon-btn {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        border: 1px solid #d6cec3;
-        background: #fff;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-        display: grid;
-        place-items: center;
-        cursor: pointer;
+        color: var(--accent);
         text-decoration: none;
+        font-weight: 600;
+        justify-content: center;
       }
-      .icon-btn:hover {
+
+      .cta:hover {
         background: #f7f4ef;
       }
-      .toast {
-        position: fixed;
-        bottom: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #1e1e1e;
-        color: #fff;
-        padding: 8px 12px;
-        border-radius: 999px;
-        font-size: 12px;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
+
+      .note {
+        font-size: 13px;
+        color: #6b6054;
       }
-      .toast.show {
-        opacity: 1;
-      }
-      .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        border: 0;
-      }
-      .label {
-        font-size: 10px;
-        color: #3a5a40;
-        margin-top: 4px;
-        text-align: center;
-      }
-      .like-wrap {
+
+      .prices {
+        margin-top: 10px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: #fbf7ef;
+        border: 1px solid #e7ddcc;
         display: grid;
-        justify-items: center;
+        gap: 8px;
+      }
+
+      .prices-title {
+        font-weight: 600;
+        color: #4a433a;
+      }
+
+      .price-row {
+        display: grid;
+        grid-template-columns: 1.4fr 0.8fr 1fr;
+        gap: 8px;
+        align-items: center;
+        font-size: 14px;
+      }
+
+      .price-value {
+        font-weight: 600;
+        color: var(--accent-2);
+      }
+
+      .price-change {
+        font-variant-numeric: tabular-nums;
+        color: #6b6054;
+      }
+
+      .price-time {
+        font-size: 12px;
+        color: #6b6054;
+      }
+
+      @media (max-width: 720px) {
+        .cta {
+          justify-content: center;
+        }
+        .price-row {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="card">
-      <div class="word-row">
-        <div id="word" class="word">Loading…</div>
-        <button class="speak-btn" id="speakBtn" aria-label="Pronounce word in English">
-          <svg width="20" height="14" viewBox="0 0 64 40" fill="none" stroke="#3a5a40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M2 18c8 12 20 18 30 18s22-6 30-18C54 6 42 2 32 2S10 6 2 18z" fill="#3a5a40"/>
-            <path d="M10 18c6 6 14 10 22 10s16-4 22-10" stroke="#f6f3ee"/>
-          </svg>
-          <span class="sr-only">Pronounce</span>
-        </button>
-        <button class="speak-btn" id="speakBtnZh" aria-label="Pronounce word in Chinese">
-          <svg width="20" height="14" viewBox="0 0 60 40" aria-hidden="true">
-            <rect width="60" height="40" fill="#de2910"/>
-            <polygon points="8,6 10.5,13 3.5,8.7 12.5,8.7 5.5,13" fill="#ffde00"/>
-            <polygon points="18,6 19.2,8.8 16.3,7 19.7,7 16.8,8.8" fill="#ffde00"/>
-            <polygon points="22,12 23.2,14.8 20.3,13 23.7,13 20.8,14.8" fill="#ffde00"/>
-            <polygon points="22,20 23.2,22.8 20.3,21 23.7,21 20.8,22.8" fill="#ffde00"/>
-            <polygon points="18,26 19.2,28.8 16.3,27 19.7,27 16.8,28.8" fill="#ffde00"/>
-          </svg>
-          <span class="sr-only">Pronounce in Chinese</span>
-        </button>
-      </div>
-      <div id="definition" class="definition">Please wait</div>
-      <button class="refresh" id="refresh">New word</button>
-      <div id="meta" class="meta"></div>
-      <div id="warning" class="warning"></div>
-    </div>
+    <main class="page">
+      <section class="hero">
+        <h1 class="title">Anthony's Brain</h1>
+        <p class="subtitle">Quick links to daily ideas, tools, and reflections.</p>
 
-    <div class="actions">
-      <button class="icon-btn" id="shareBtn" aria-label="Share word of the day">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a5a40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="18" cy="5" r="3"></circle>
-          <circle cx="6" cy="12" r="3"></circle>
-          <circle cx="18" cy="19" r="3"></circle>
-          <path d="M8.7 11.1l6.6-3.2M8.7 12.9l6.6 3.2"></path>
-        </svg>
-        <span class="sr-only">Share</span>
-      </button>
+        <div class="cta-grid">
+          <a class="cta" href="https://theobstacle-theway.github.io/WOD/" target="_blank" rel="noreferrer">Word of the Day</a>
+          <a class="cta" href="https://theobstacle-theway.github.io/Stoics/" target="_blank" rel="noreferrer">Stoic Thoughts</a>
+          <a class="cta" href="https://deephealth.com/psa-density-calculator/" target="_blank" rel="noreferrer">Prostate</a>
+          <a class="cta" href="https://www.uptodate.com/contents/calculator-solitary-pulmonary-nodule-malignancy-risk-in-adults-brock-university-cancer-prediction-equation" target="_blank" rel="noreferrer">PanCan</a>
+          <a class="cta" href="https://www.radiology.no/vdt/" target="_blank" rel="noreferrer">VDT</a>
+        </div>
 
-      <div class="like-wrap">
-        <a
-          class="icon-btn"
-          aria-label="I like the app"
-          href="mailto:drchan2015@gmail.com?subject=I%20like%20your%20Word%20of%20the%20Day%20app&body=Hi%2C%0D%0AI%20like%20your%20Word%20of%20the%20Day%20app.%20Thanks%21"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#3a5a40" stroke="#3a5a40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M20.8 8.6c0-2.1-1.7-3.8-3.8-3.8-1.6 0-2.9.8-3.6 2-0.7-1.2-2-2-3.6-2-2.1 0-3.8 1.7-3.8 3.8 0 4.6 7.4 9 7.4 9s7.4-4.4 7.4-9z"/>
-          </svg>
-          <span class="sr-only">I like the app</span>
-        </a>
-        <div class="label">I like the app</div>
-      </div>
-    </div>
+        <section class="prices" aria-live="polite">
+          <div class="prices-title">Latest Share Prices</div>
+          <div class="price-row" data-symbol="EMV.AX">
+            <div>EMV.AX (Emvision)</div>
+            <div class="price-value">Loading…</div>
+            <div class="price-change"></div>
+          </div>
+          <div class="price-row" data-symbol="ADUR">
+            <div>ADUR (Aduro Clean Technologies)</div>
+            <div class="price-value">Loading…</div>
+            <div class="price-change"></div>
+          </div>
+          <div class="price-time" id="priceTime"></div>
+        </section>
 
-    <div id="toast" class="toast">Copied to clipboard</div>
-
+        <p class="note">Opens each resource in a new tab.</p>
+      </section>
+    </main>
     <script>
-      const uncommonWords = [
-        "abditive","acnestis","acumen","adumbrate","aeonian","agelast","albescent","alef","anfractuous",
-        "anopisthographic","apricity","ataraxia","borborygmus","brontide","cacography","cacoethes",
-        "callipygian","chiaroscuro","clinamen","concinnity","crepuscular","defenestrate","deliquescent",
-        "deliquesce","desuetude","diaphanous","eleemosynary","elision","empyrean","ensconced","epenthesis",
-        "eremocracy","erubescent","eurhythmic","eutrapelia","exiguous","farrago","fatuous","febrifuge",
-        "floccinaucinihilipilification","frangipani","fugacious","gallimaufry","glabrous","graniloquent",
-        "halcyon","hebetude","inchoate","insondable","juxtapose","lachrymose","lagnappe","lambent",
-        "lemmatize","limerence","lugubrious","mellifluous","nepenthe","noctivagant","obdurate","onychophagy",
-        "orotund","palimpsest","pareidolia","periplous","persiflage","pleonasm","pulchritude","quiddity",
-        "recondite","refulgent","resplendent","rhodomontade","sesquipedalian","somnambulism","susurrus",
-        "thalassic","tintinnabulation","truculent","ultracrepidarian","umbrage","velleity","vicissitude",
-        "zenithal"
+      const priceRows = [
+        { symbol: "EMV.AX", label: "EMV.AX (Emvision)" },
+        { symbol: "ADUR", label: "ADUR (Aduro Clean Technologies)" }
       ];
 
-      function getTodayKey() {
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = String(now.getMonth() + 1).padStart(2, "0");
-        const d = String(now.getDate()).padStart(2, "0");
-        return `${y}-${m}-${d}`;
+      const proxyBase = "https://api.allorigins.win/raw?url=";
+
+      function formatChange(change, changePct) {
+        if (typeof change !== "number" || typeof changePct !== "number") return "";
+        const sign = change >= 0 ? "+" : "";
+        return `${sign}${change.toFixed(2)} (${sign}${changePct.toFixed(2)}%)`;
       }
 
-      function hashString(str) {
-        let h = 2166136261;
-        for (let i = 0; i < str.length; i++) {
-          h ^= str.charCodeAt(i);
-          h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
-        }
-        return Math.abs(h);
+      function formatTime(epochSeconds) {
+        if (!epochSeconds) return "";
+        const dt = new Date(epochSeconds * 1000);
+        return `Updated: ${dt.toLocaleString()}`;
       }
 
-      function pickDailyWord() {
-        const today = getTodayKey();
-        const cachedDate = localStorage.getItem("wod-date");
-        const cachedWord = localStorage.getItem("wod-word");
-
-        if (cachedDate === today && cachedWord) {
-          return cachedWord;
-        }
-
-        const idx = hashString(today) % uncommonWords.length;
-        const word = uncommonWords[idx];
-        localStorage.setItem("wod-date", today);
-        localStorage.setItem("wod-word", word);
-        return word;
-      }
-
-      function pickRandomWord() {
-        const idx = Math.floor(Math.random() * uncommonWords.length);
-        return uncommonWords[idx];
-      }
-
-      function cleanHtml(html) {
-        const tmp = document.createElement("div");
-        tmp.innerHTML = html;
-        return (tmp.textContent || "").trim();
-      }
-
-      async function fetchDefinition(word) {
-        const url = `https://en.wiktionary.org/api/rest_v1/page/definition/${encodeURIComponent(word)}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Definition request failed");
+      async function fetchQuote(symbol) {
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1d&interval=1d&includePrePost=false&corsDomain=finance.yahoo.com`;
+        const res = await fetch(proxyBase + encodeURIComponent(url));
+        if (!res.ok) throw new Error("Quote request failed");
         const data = await res.json();
-
-        const entries = data.en || [];
-        for (const entry of entries) {
-          const defs = entry.definitions || [];
-          for (const def of defs) {
-            if (def.definition) return cleanHtml(def.definition);
-          }
-        }
-        return "";
+        const meta = data?.chart?.result?.[0]?.meta;
+        if (!meta) throw new Error("Quote unavailable");
+        return {
+          price: meta.regularMarketPrice,
+          change: meta.regularMarketChange,
+          changePct: meta.regularMarketChangePercent,
+          currency: meta.currency,
+          time: meta.regularMarketTime
+        };
       }
 
-      async function loadWord(word) {
-        const wordEl = document.getElementById("word");
-        const defEl = document.getElementById("definition");
-        const metaEl = document.getElementById("meta");
+      async function loadPrices() {
+        const timeEl = document.getElementById("priceTime");
+        let latestTime = 0;
 
-        wordEl.textContent = "Loading…";
-        defEl.textContent = "Please wait";
-        metaEl.textContent = "Source: Wiktionary";
+        await Promise.all(priceRows.map(async ({ symbol }) => {
+          const row = document.querySelector(`.price-row[data-symbol="${symbol}"]`);
+          const valueEl = row.querySelector(".price-value");
+          const changeEl = row.querySelector(".price-change");
 
-        try {
-          const definition = await fetchDefinition(word);
-          wordEl.textContent = word;
-          defEl.textContent = definition || "Definition not found for this word.";
-        } catch (err) {
-          wordEl.textContent = word;
-          defEl.textContent = "Could not load the definition. Please try again.";
-        }
-      }
-
-      function getShareText() {
-        const word = document.getElementById("word").textContent;
-        const def = document.getElementById("definition").textContent;
-        return `Word of the Day: ${word} — ${def}`;
-      }
-
-      async function shareWord() {
-        const text = getShareText();
-        const title = "Word of the Day";
-
-        if (navigator.share) {
           try {
-            await navigator.share({ title, text });
-            return;
-          } catch (e) {}
-        }
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(text);
-          showToast("Copied to clipboard");
-        } else {
-          showToast("Sharing not supported");
-        }
-      }
-
-      function showToast(msg) {
-        const toast = document.getElementById("toast");
-        toast.textContent = msg;
-        toast.classList.add("show");
-        setTimeout(() => toast.classList.remove("show"), 1400);
-      }
-
-      function getVoicesAsync() {
-        return new Promise((resolve) => {
-          const existing = window.speechSynthesis.getVoices();
-          if (existing && existing.length) {
-            resolve(existing);
-            return;
+            const q = await fetchQuote(symbol);
+            const currency = q.currency ? ` ${q.currency}` : "";
+            valueEl.textContent = typeof q.price === "number" ? `${q.price.toFixed(2)}${currency}` : "Unavailable";
+            changeEl.textContent = formatChange(q.change, q.changePct);
+            if (q.time && q.time > latestTime) latestTime = q.time;
+          } catch (err) {
+            valueEl.textContent = "Unavailable";
+            changeEl.textContent = "";
           }
-          const onChange = () => {
-            const voices = window.speechSynthesis.getVoices();
-            if (voices && voices.length) {
-              window.speechSynthesis.removeEventListener("voiceschanged", onChange);
-              resolve(voices);
-            }
-          };
-          window.speechSynthesis.addEventListener("voiceschanged", onChange);
-          setTimeout(() => {
-            window.speechSynthesis.removeEventListener("voiceschanged", onChange);
-            resolve(window.speechSynthesis.getVoices() || []);
-          }, 800);
-        });
+        }));
+
+        timeEl.textContent = latestTime ? formatTime(latestTime) : "Updated: unavailable";
       }
 
-      async function checkChineseVoice() {
-        if (!("speechSynthesis" in window)) {
-          document.getElementById("warning").textContent = "Speech not supported in this browser.";
-          return;
-        }
-        const voices = await getVoicesAsync();
-        const hasZh = voices.some((v) => v.lang && v.lang.toLowerCase().startsWith("zh"));
-        document.getElementById("warning").textContent = hasZh
-          ? ""
-          : "No Chinese voice installed. Add one in System Settings → Accessibility → Spoken Content.";
-      }
-
-      async function speakWordLang(lang, text) {
-        if (!text || text === "Loading…" || text === "Unavailable") {
-          showToast("No word to pronounce");
-          return;
-        }
-
-        if (!("speechSynthesis" in window)) {
-          showToast("Speech not supported");
-          return;
-        }
-
-        const utterance = new SpeechSynthesisUtterance(text);
-        const voices = await getVoicesAsync();
-        const exact = voices.find((v) => v.lang === lang);
-        const partial = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith(lang.slice(0, 2).toLowerCase()));
-        if (exact || partial) {
-          utterance.voice = exact || partial;
-        }
-        utterance.lang = (exact || partial) ? (exact || partial).lang : lang;
-        utterance.rate = 0.9;
-        utterance.pitch = 1.0;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utterance);
-      }
-
-      async function translateToMandarin(word) {
-        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|zh-CN`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Translation request failed");
-        const data = await res.json();
-        if (data.responseStatus !== 200) throw new Error("Translation error");
-        return (data.responseData && data.responseData.translatedText) ? data.responseData.translatedText : "";
-      }
-
-      document.getElementById("refresh").addEventListener("click", () => {
-        const word = pickRandomWord();
-        loadWord(word);
-      });
-      document.getElementById("shareBtn").addEventListener("click", shareWord);
-      document.getElementById("speakBtn").addEventListener("click", () => {
-        const word = document.getElementById("word").textContent;
-        speakWordLang("en-US", word);
-      });
-      document.getElementById("speakBtnZh").addEventListener("click", async () => {
-        const word = document.getElementById("word").textContent;
-        try {
-          const zh = await translateToMandarin(word);
-          document.getElementById("meta").textContent = zh ? `Mandarin: ${zh} (via MyMemory)` : "Mandarin: unavailable";
-          if (zh) {
-            await speakWordLang("zh-CN", zh);
-          } else {
-            showToast("Translation unavailable");
-          }
-        } catch (e) {
-          document.getElementById("meta").textContent = "Mandarin: unavailable";
-          showToast("Translation unavailable");
-        }
-      });
-
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.addEventListener("voiceschanged", checkChineseVoice);
-      }
-
-      loadWord(pickDailyWord());
-      checkChineseVoice();
+      loadPrices();
     </script>
   </body>
 </html>
